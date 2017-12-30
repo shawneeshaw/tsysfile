@@ -1,5 +1,5 @@
-#ifndef	TSYS_FILEUTIL_H
-#define	TSYS_FILEUTIL_H
+#ifndef TSYS_FILEUTIL_H
+#define TSYS_FILEUTIL_H
 
 
 void *quick_mem_find    (const void    *pattern,  long pl,
