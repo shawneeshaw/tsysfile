@@ -56,7 +56,6 @@ tsysASCIILineReader::~tsysASCIILineReader()
 int tsysASCIILineReader::preRead()
 {
     //@@preconditions
-    assert(this->bufferLen > 0);
     //@@end preconditions
 
     this->bufferLen = this->initBufferLen;
