@@ -1,5 +1,5 @@
-#ifndef	TSYS_FILE_H
-#define	TSYS_FILE_H
+#ifndef TSYS_FILE_H
+#define TSYS_FILE_H
 
 #ifdef WIN32  //Windows
   #include <io.h>
@@ -27,14 +27,14 @@
     #undef  TSYS_EXPORT_EXTERN
     #undef  TSYS_IMPORT
 
-    #define	TSYS_EXPORT                __declspec(dllexport)
-    #define	TSYS_EXPORT_EXTERN  extern __declspec(dllexport)
-    #define	TSYS_IMPORT                __declspec(dllimport)
+    #define TSYS_EXPORT                __declspec(dllexport)
+    #define TSYS_EXPORT_EXTERN  extern __declspec(dllexport)
+    #define TSYS_IMPORT                __declspec(dllimport)
   #endif
 #else
-    #define	TSYS_EXPORT
-    #define	TSYS_EXPORT_EXTERN
-    #define	TSYS_IMPORT
+    #define TSYS_EXPORT
+    #define TSYS_EXPORT_EXTERN
+    #define TSYS_IMPORT
 #endif
 
 
@@ -101,137 +101,137 @@ typedef tsys_ui64t   ccxx_size_64t;
 */
 class TSYS_EXPORT tsysFile {
 public:
-	enum Error {
-		errSuccess = 0,
-		errNotOpened,
-		errMapFailed,
-		errInitFailed,
-		errOpenDenied,
-		errOpenFailed,
-		errOpenInUse,
-		errReadInterrupted,
-		errReadIncomplete,
-		errReadFailure,
-		errWriteInterrupted,
-		errWriteIncomplete,
-		errWriteFailure,
-		errLockFailure,
-		errExtended,
-        errZeroLength
-	};
-	typedef enum Error Error;
+  enum Error {
+    errSuccess = 0,
+    errNotOpened,
+    errMapFailed,
+    errInitFailed,
+    errOpenDenied,
+    errOpenFailed,
+    errOpenInUse,
+    errReadInterrupted,
+    errReadIncomplete,
+    errReadFailure,
+    errWriteInterrupted,
+    errWriteIncomplete,
+    errWriteFailure,
+    errLockFailure,
+    errExtended,
+    errZeroLength
+  };
+  typedef enum Error Error;
 
-	enum Access {
+  enum Access {
 #ifndef WIN32
-		accessReadOnly  = O_RDONLY,
-		accessWriteOnly = O_WRONLY,
-		accessReadWrite = O_RDWR
+    accessReadOnly  = O_RDONLY,
+    accessWriteOnly = O_WRONLY,
+    accessReadWrite = O_RDWR
 #else
-		accessReadOnly  = GENERIC_READ,
-		accessWriteOnly = GENERIC_WRITE,
-		accessReadWrite = GENERIC_READ | GENERIC_WRITE
+    accessReadOnly  = GENERIC_READ,
+    accessWriteOnly = GENERIC_WRITE,
+    accessReadWrite = GENERIC_READ | GENERIC_WRITE
 #endif
-	};
-	typedef enum Access Access;
+  };
+  typedef enum Access Access;
 
 protected:
-	typedef struct _fcb {
-		struct _fcb * next;
-		caddr_t       address;
-		ccxx_size_t   len;
-		fpos_64t      pos;      /* off_t pos */
-		bool          locked;
-	} fcb_t;
+  typedef struct _fcb {
+    struct _fcb * next;
+    caddr_t       address;
+    ccxx_size_t   len;
+    fpos_64t      pos;      /* off_t pos */
+    bool          locked;
+  } fcb_t;
 
 public:
-#ifdef	WIN32
-	enum Open {
-		openReadOnly,  // = FILE_OPEN_READONLY,
-		openWriteOnly, // = FILE_OPEN_WRITEONLY,
-		openReadWrite, // = FILE_OPEN_READWRITE,
-		openAppend,    // = FILE_OPEN_APPEND,
-		openTruncate   // = FILE_OPEN_TRUNCATE
-	};
+#ifdef  WIN32
+  enum Open {
+    openReadOnly,  // = FILE_OPEN_READONLY,
+    openWriteOnly, // = FILE_OPEN_WRITEONLY,
+    openReadWrite, // = FILE_OPEN_READWRITE,
+    openAppend,    // = FILE_OPEN_APPEND,
+    openTruncate   // = FILE_OPEN_TRUNCATE
+  };
 #else
-	enum Open {
-		openReadOnly  = O_RDONLY,
-		openWriteOnly = O_WRONLY,
-		openReadWrite = O_RDWR,
-		openAppend    = O_WRONLY | O_APPEND,
-#ifdef	O_SYNC
-		openSync = O_RDWR | O_SYNC,
+  enum Open {
+    openReadOnly  = O_RDONLY,
+    openWriteOnly = O_WRONLY,
+    openReadWrite = O_RDWR,
+    openAppend    = O_WRONLY | O_APPEND,
+#ifdef  O_SYNC
+    openSync = O_RDWR | O_SYNC,
 #else
-		openSync = O_RDWR,
+    openSync = O_RDWR,
 #endif
-		openTruncate = O_RDWR | O_TRUNC
-	};
-	typedef enum Open Open;
+    openTruncate = O_RDWR | O_TRUNC
+  };
+  typedef enum Open Open;
 
 /* to be used in future */
 
-#ifndef	S_IRUSR
-#define	S_IRUSR	0400
-#define	S_IWUSR 0200
-#define	S_IRGRP 0040
-#define	S_IWGRP 0020
-#define	S_IROTH 0004
-#define	S_IWOTH	0002
+#ifndef S_IRUSR
+#define S_IRUSR 0400
+#define S_IWUSR 0200
+#define S_IRGRP 0040
+#define S_IWGRP 0020
+#define S_IROTH 0004
+#define S_IWOTH 0002
 #endif
 
 #endif // !WIN32
 
 #ifndef WIN32
-	enum Attr {
-		attrInvalid = 0,
-		attrPrivate = S_IRUSR | S_IWUSR,
-		attrGroup   = attrPrivate | S_IRGRP | S_IWGRP,
-		attrPublic  = attrGroup   | S_IROTH | S_IWOTH
-	};
+  enum Attr {
+    attrInvalid = 0,
+    attrPrivate = S_IRUSR | S_IWUSR,
+    attrGroup   = attrPrivate | S_IRGRP | S_IWGRP,
+    attrPublic  = attrGroup   | S_IROTH | S_IWOTH
+  };
 #else // defined WIN32
-	enum Attr {
-		attrInvalid = 0,
-		attrPrivate,
-		attrGroup,
-		attrPublic
-	};
+  enum Attr {
+    attrInvalid = 0,
+    attrPrivate,
+    attrGroup,
+    attrPublic
+  };
 #endif // !WIN32
-	typedef enum Attr Attr;
+  typedef enum Attr Attr;
 
-#ifdef	WIN32
-	enum Complete {
-		completionImmediate, // = FILE_COMPLETION_IMMEDIATE,
-		completionDelayed,   // = FILE_COMPLETION_DELAYED,
-		completionDeferred   // = FILE_COMPLETION_DEFERRED
-	};
+#ifdef  WIN32
+  enum Complete {
+    completionImmediate, // = FILE_COMPLETION_IMMEDIATE,
+    completionDelayed,   // = FILE_COMPLETION_DELAYED,
+    completionDeferred   // = FILE_COMPLETION_DEFERRED
+  };
 
-	enum Mapping {
-		mappedRead,
-		mappedWrite,
-		mappedReadWrite
-	};
+  enum Mapping {
+    mappedRead,
+    mappedWrite,
+    mappedReadWrite
+  };
 #else
-	enum Mapping {
-		mappedRead      = accessReadOnly,
-		mappedWrite     = accessWriteOnly,
-		mappedReadWrite = accessReadWrite
-	};
+  enum Mapping {
+    mappedRead      = accessReadOnly,
+    mappedWrite     = accessWriteOnly,
+    mappedReadWrite = accessReadWrite
+  };
 
-    enum Complete {
-        completionImmediate,
-        completionDelayed,
-        completionDeferred
-    };
+  enum Complete {
+    completionImmediate,
+    completionDelayed,
+    completionDeferred
+  };
 #endif
-	typedef enum Complete Complete;
-	typedef enum Mapping Mapping;
+  typedef enum Complete Complete;
+  typedef enum Mapping Mapping;
 
 public:
-    enum Position {
-        positionBegin = 0,
-        positionEnd,
-        positionCurrent
-    };
-    typedef enum Position Position;
+  enum Position {
+    positionBegin = 0,
+    positionEnd,
+    positionCurrent
+  };
+  typedef enum Position Position;
 };
 
 
@@ -248,155 +248,155 @@ public:
 class TSYS_EXPORT tsysRandomFile : public tsysFile
 {
 private:
-	Error errid;
-	char *errstr;
+  Error errid;
+  char *errstr;
 
 protected:
 #ifndef WIN32
-	int fd;
-	Access access;
+  int    fd;
+  Access access;
 #else
-	HANDLE fd;
+  HANDLE fd;
 #endif
-	char * pathname;
+  char * pathname;
 
-	struct {
-		unsigned count : 16;
-		bool thrown    :  1;
-		bool initial   :  1;
+  struct {
+    unsigned count : 16;
+    bool thrown    :  1;
+    bool initial   :  1;
 #ifndef WIN32
-		bool immediate :  1;
+    bool immediate :  1;
 #endif
-		bool temp      :  1;
-	} flags;
+    bool temp      :  1;
+  } flags;
 
-	/**
-	 * Create an unopened random access file.
-	 */
-	tsysRandomFile(const char *name = NULL);
+  /**
+   * Create an unopened random access file.
+   */
+  tsysRandomFile(const char *name = NULL);
 
-	/**
-	 * Default copy constructor.
-	 */
-	tsysRandomFile(const tsysRandomFile &rf);
+  /**
+   * Default copy constructor.
+   */
+  tsysRandomFile(const tsysRandomFile &rf);
 
-	/**
-	 * Post an error event.
-	 *
-	 * @return error code.
-	 * @param errid error code.
-	 * @param errstr error message string.
-	 */
-	Error error(Error errid, char *errstr = NULL);
+  /**
+   * Post an error event.
+   *
+   * @return error code.
+   * @param errid error code.
+   * @param errstr error message string.
+   */
+  Error error(Error errid, char *errstr = NULL);
 
-	/**
-	 * Post an extended string error message.
-	 *
-	 * @return errExtended.
-	 * @param err error string.
-	 */
-	inline Error error(char *err) {return error(errExtended, err);};
+  /**
+   * Post an extended string error message.
+   *
+   * @return errExtended.
+   * @param err error string.
+   */
+  inline Error error(char *err) {return error(errExtended, err);};
 
-	/**
-	 * Used to enable or disable throwing of exceptions on
-	 * errors.
-	 *
-	 * @param enable true if errors will be thrown.
-	 */
-	inline void setError(bool enable) {flags.thrown = !enable;};
+  /**
+   * Used to enable or disable throwing of exceptions on
+   * errors.
+   *
+   * @param enable true if errors will be thrown.
+   */
+  inline void setError(bool enable) {flags.thrown = !enable;};
 
 #ifndef WIN32
-	/**
-	 * Used to set file completion modes.
-	 *
-	 * @return errSuccess if okay.
-	 * @param mode completion mode.
-	 * @todo implement in win32
-	 */
-	Error setCompletion(Complete mode);
+  /**
+   * Used to set file completion modes.
+   *
+   * @return errSuccess if okay.
+   * @param mode completion mode.
+   * @todo implement in win32
+   */
+  Error setCompletion(Complete mode);
 #endif
 
-	/**
-	 * Used to set the temporary attribute for the file.  Temporary
-	 * files are automatically deleted when closed.
-	 *
-	 * @param enable true for marking as temporary.
-	 */
-	inline void setTemporary(bool enable) {flags.temp = enable;};
+  /**
+   * Used to set the temporary attribute for the file.  Temporary
+   * files are automatically deleted when closed.
+   *
+   * @param enable true for marking as temporary.
+   */
+  inline void setTemporary(bool enable) {flags.temp = enable;};
 
-	/**
-	 * This method is used to initialize a newly created file as
-	 * indicated by the "initial" flag.  This method also returns
-	 * the file access permissions that should be associated with
-	 * the file.  This method should never be called directly, but
-	 * is instead used to impliment the "Initial" method.  Typically
-	 * one would use this to build an empty database shell when a
-	 * previously empty database file is created.
-	 *
-	 * @return access, or attrInvalid if should be removed.
-	 */
-	virtual Attr initialize(void);
+  /**
+   * This method is used to initialize a newly created file as
+   * indicated by the "initial" flag.  This method also returns
+   * the file access permissions that should be associated with
+   * the file.  This method should never be called directly, but
+   * is instead used to impliment the "Initial" method.  Typically
+   * one would use this to build an empty database shell when a
+   * previously empty database file is created.
+   *
+   * @return access, or attrInvalid if should be removed.
+   */
+  virtual Attr initialize(void);
 
-	/**
-	 * Close the file.
-	 */
-	void final(void);
+  /**
+   * Close the file.
+   */
+  void final(void);
 
 public:
-	/**
-	 * Destroy a random access file or it's derived class.
-	 */
-	virtual ~tsysRandomFile();
+  /**
+   * Destroy a random access file or it's derived class.
+   */
+  virtual ~tsysRandomFile();
 
-	/**
-	 * This method should be called right after a tsysRandomFile derived
-	 * object has been created.  This method will invoke initialize
-	 * if the object is newly created, and set file access permissions
-	 * appropriately.
-	 *
-	 * @return true if file had to be initialized.
-	 */
-	bool initial(void);
+  /**
+   * This method should be called right after a tsysRandomFile derived
+   * object has been created.  This method will invoke initialize
+   * if the object is newly created, and set file access permissions
+   * appropriately.
+   *
+   * @return true if file had to be initialized.
+   */
+  bool initial(void);
 
-	/**
-	 * Get current file capacity. Support over 2GB huge file.
-	 *
-	 * @return total file size in bytes.
-	 */
-	fsize_64t length(void);
-    fsize_64t getCapacity(void) { return length(); };
+  /**
+   * Get current file capacity. Support over 2GB huge file.
+   *
+   * @return total file size in bytes.
+   */
+  fsize_64t length(void);
+  fsize_64t getCapacity(void) { return length(); };
 
-	/**
-	 * This method is commonly used to close and re-open an existing
-	 * database.  This may be used when the database has been unlinked
-	 * and an external process provides a new one to use.
-	 */
-	virtual Error restart(void);
+  /**
+   * This method is commonly used to close and re-open an existing
+   * database.  This may be used when the database has been unlinked
+   * and an external process provides a new one to use.
+   */
+  virtual Error restart(void);
 
-	/**
-	 * Return current error id.
-	 *
-	 * @return last error identifier set.
-	 */
-	inline Error getErrorNumber(void)
+  /**
+   * Return current error id.
+   *
+   * @return last error identifier set.
+   */
+  inline Error getErrorNumber(void)
     {
         return errid;
     };
 
-	/**
-	 * Return current error string.
-	 *
-	 * @return last error string set.
-	 */
-	inline char *getErrorString(void) {return errstr;};
+  /**
+   * Return current error string.
+   *
+   * @return last error string set.
+   */
+  inline char *getErrorString(void) {return errstr;};
 
-	bool operator!(void);
+  bool operator!(void);
 };
 
 //////////////////////////////////////////////////////////////////////////
 /**
  * Create and map a disk file into memory.  This portable class works
- * under both Posix via mmap and under the win32 API. A mapped file
+ * under both POSIX via mmap and under the win32 API. A mapped file
  * can be referenced directly by it's memory segment. One can map
  * and unmap portions of a file on demand, and update
  * changed memory pages mapped from files immediately through sync().
@@ -406,155 +406,155 @@ public:
  */
 class TSYS_EXPORT tsysMappedFile : public tsysRandomFile {
 private:
-	fcb_t fcb;
-	int prot;
-#ifdef	WIN32
-	HANDLE map;
-	char mapname[1024];
+  fcb_t fcb;
+  int   prot;
+#ifdef  WIN32
+  HANDLE map;
+  char   mapname[1024];
 
-    SYSTEM_INFO sinf;
+  SYSTEM_INFO sinf;
 #else
-    int flg;
+  int flg;
 #endif
 
 public:
-	/**
-	 * Open a file for mapping.  More than one segment of a file
-	 * may be mapped into separate regions of memory.
-	 *
-	 * @param fname file name to access for mapping.
-	 * @param mode  access mode to map file.
-	 */
-	tsysMappedFile(const char *fname, Access mode);
+  /**
+   * Open a file for mapping.  More than one segment of a file
+   * may be mapped into separate regions of memory.
+   *
+   * @param fname file name to access for mapping.
+   * @param mode  access mode to map file.
+   */
+  tsysMappedFile(const char *fname, Access mode);
 
-	/**
-	 * Create if not exists, and map a file of specified size
-	 * into memory.
-	 *
-	 * @param fname file name to access for mapping.
-	 * @param mode access mode to map file.
-	 * @param size of file to map.
-	 */
-	tsysMappedFile(const char *fname, Access mode, size_64t size);
+  /**
+   * Create if not exists, and map a file of specified size
+   * into memory.
+   *
+   * @param fname file name to access for mapping.
+   * @param mode access mode to map file.
+   * @param size of file to map.
+   */
+  tsysMappedFile(const char *fname, Access mode, size_64t size);
 
-	/**
-	 * Map a portion or all of a specified file in the specified
-	 * shared memory access mode.  Valid mapping modes include
-	 * mappedRead, mappedWrite, and mappedReadWrite.
-	 *
-	 * @param fname pathname of file to map into memory.
-	 * @param offset from start of file to begin mapping in bytes.
-	 * @param size of mapped area in bytes.
-	 * @param mode to map file.
-	 */
-	tsysMappedFile(const char *fname, fpos_64t offset, size_64t size, Access mode);
+  /**
+   * Map a portion or all of a specified file in the specified
+   * shared memory access mode.  Valid mapping modes include
+   * mappedRead, mappedWrite, and mappedReadWrite.
+   *
+   * @param fname pathname of file to map into memory.
+   * @param offset from start of file to begin mapping in bytes.
+   * @param size of mapped area in bytes.
+   * @param mode to map file.
+   */
+  tsysMappedFile(const char *fname, fpos_64t offset, size_64t size, Access mode);
 
-	/**
-	 * Release a mapped section of memory associated with a file.  The
-	 * mapped area is updated back to disk.
-	 */
-	virtual ~tsysMappedFile();
+  /**
+   * Release a mapped section of memory associated with a file.  The
+   * mapped area is updated back to disk.
+   */
+  virtual ~tsysMappedFile();
 
-	/**
-	 * Synchronize the contents of the mapped portion of memory with
-	 * the disk file and wait for completion.  This assures the memory
-	 * mapped from the file is written back.
-	 */
-	void sync(void);
+  /**
+   * Synchronize the contents of the mapped portion of memory with
+   * the disk file and wait for completion.  This assures the memory
+   * mapped from the file is written back.
+   */
+  void sync(void);
 
-	/**
-	 * Synchronize a segment of memory mapped from a segment fetch.
-	 *
-	 * @param address memory address to update.
-	 * @param len size of segment.
-	 */
-	void sync(caddr_t address, size_t len);
+  /**
+   * Synchronize a segment of memory mapped from a segment fetch.
+   *
+   * @param address memory address to update.
+   * @param len size of segment.
+   */
+  void sync(caddr_t address, size_t len);
 
-	/**
-	 * Map a portion of the memory mapped from the file back to the
-	 * file and do not wait for completion.  This is useful when mapping
-	 * a database file and updating a single record.
-	 *
-	 * @param offset offset into the mapped region of memory.
-	 * @param len length of partial region (example, record length).
-	 */
-	void update(size_t offset = 0, size_t len = 0);
+  /**
+   * Map a portion of the memory mapped from the file back to the
+   * file and do not wait for completion.  This is useful when mapping
+   * a database file and updating a single record.
+   *
+   * @param offset offset into the mapped region of memory.
+   * @param len length of partial region (example, record length).
+   */
+  void update(size_t offset = 0, size_t len = 0);
 
-	/**
-	 * Update a mapped region back to disk as specified by address
-	 * and length.
-	 *
-	 * @param address address of segment.
-	 * @param len length of segment.
-	 */
-	void update(caddr_t address, size_t len);
+  /**
+   * Update a mapped region back to disk as specified by address
+   * and length.
+   *
+   * @param address address of segment.
+   * @param len length of segment.
+   */
+  void update(caddr_t address, size_t len);
 
-	/**
-	 * Release (unmap) a memory segment.
-	 *
-	 * @param address address of memory segment to release.
-	 * @param len length of memory segment to release.
-	 */
-	void release(caddr_t address, size_t len);
+  /**
+   * Release (unmap) a memory segment.
+   *
+   * @param address address of memory segment to release.
+   * @param len length of memory segment to release.
+   */
+  void release(caddr_t address, size_t len);
 
-	/**
-	 * Fetch a pointer to an offset within the memory mapped portion
-	 * of the disk file.  This really is used for convenience of matching
-	 * operations between Update and Fetch, as one could simply have
-	 * accessed the base pointer where the file was mapped directly.
-	 *
-	 * @param offset from start of mapped memory.
-	 */
-    inline caddr_t fetch(fpos_64t offset = 0) { return ((char *)(fcb.address)) + offset; };
+  /**
+   * Fetch a pointer to an offset within the memory mapped portion
+   * of the disk file.  This really is used for convenience of matching
+   * operations between Update and Fetch, as one could simply have
+   * accessed the base pointer where the file was mapped directly.
+   *
+   * @param offset from start of mapped memory.
+   */
+  inline caddr_t fetch(fpos_64t offset = 0) { return ((char *)(fcb.address)) + offset; };
 
-	/**
-	 * Fetch and map a portion of a disk file to a logical memory
-	 * block.
-	 *
-	 * @return pointer to memory segment.
-	 * @param pos offset of file segment to map.
-	 * @param len size of memory segment to map.
-	 */
-	caddr_t fetch(fpos_64t pos, tsys_ui32t len);
+  /**
+   * Fetch and map a portion of a disk file to a logical memory
+   * block.
+   *
+   * @return pointer to memory segment.
+   * @param pos offset of file segment to map.
+   * @param len size of memory segment to map.
+   */
+  caddr_t fetch(fpos_64t pos, tsys_ui32t len);
 
-	/**
-	 * Lock the currently mapped portion of a file.
-	 *
-	 * @return true if pages are locked.
-	 */
-	bool lock(void);
+  /**
+   * Lock the currently mapped portion of a file.
+   *
+   * @return true if pages are locked.
+   */
+  bool lock(void);
 
-	/**
-	 * Unlock a locked mapped portion of a file.
-	 */
-	void unlock(void);
+  /**
+   * Unlock a locked mapped portion of a file.
+   */
+  void unlock(void);
 
-	/**
-	 * Compute map size to aligned page boundary.
-	 *
-	 * @param size request.
-	 * @return page aligned size.
-	 */
-	size_t pageAligned(size_t size);
+  /**
+   * Compute map size to aligned page boundary.
+   *
+   * @param size request.
+   * @return page aligned size.
+   */
+  size_t pageAligned(size_t size);
 
-	/**
-	 * Get the system page size.
-	 *
-	 * @param not requested.
-	 * @return system page size.
-	 */
-    inline size_t getPageSize() { return this->systemPageSize; };
+  /**
+   * Get the system page size.
+   *
+   * @param not requested.
+   * @return system page size.
+   */
+  inline size_t getPageSize() { return this->systemPageSize; };
 
 protected:
-    /**
-     * get the valid mapping view size ( 1 byte <= viewSize <= 1GB(win)/2GB(linux) )
-     */
-    tsys_ui32t checkMappingSize(size_64t len);
+  /**
+   * get the valid mapping view size ( 1 byte <= viewSize <= 1GB(win)/2GB(linux) )
+   */
+  tsys_ui32t checkMappingSize(size_64t len);
 
-    /**
-     * System Page Granularity or Page Size
-     */
-    size_t systemPageSize;
+  /**
+   * System Page Granularity or Page Size
+   */
+  size_t systemPageSize;
 };
 
 inline tsys_ui32t tsysMappedFile::checkMappingSize(size_64t len)
@@ -634,7 +634,7 @@ protected:
 private:    
     tsys_ui32t curLineNo;     //the current line No.
 
-    unsigned char *curLinePointer;	//to point the address of current line
+    unsigned char *curLinePointer;  //to point the address of current line
     tsys_ui32t nCharInCurLine;      //number of characters in current line, excluding newline character(s)
 
     tsys_ui32t lineBeginPos;   //Range:[0, bufferLen]
@@ -720,7 +720,7 @@ public:
         EAT_END,
         EAT_BOTH
     };
-	typedef enum BlankTrimMode BlankTrimMode;
+  typedef enum BlankTrimMode BlankTrimMode;
 
 public:
     /** Get a line from file without newline character(s) at the current position */
@@ -734,7 +734,7 @@ private:
     int checkNewLineChars(const char *buffer, tsys_ui32t len);
 
 protected:
-	inline void *readBuffer(fpos_64t begPos, tsys_ui32t len);
+    inline void *readBuffer(fpos_64t begPos, tsys_ui32t len);
     inline tsys_ui32t checkBufferSize(size_64t len);
 
     inline int nextMappingOffsetandLen(fpos_64t &off, tsys_ui32t &len);
