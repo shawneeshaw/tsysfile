@@ -711,7 +711,7 @@ inline int tsysLineStripper::mappingPrevBlock(fpos_64t begPos, tsys_ui32t len)
 //////////////////////////////////////////////////////////////////////////
 //                    tsysASCIILineReader class
 //////////////////////////////////////////////////////////////////////////
-class TSYS_EXPORT tsysASCIILineReader : public tsysMappedFile, tsysLineStripper {
+class TSYS_EXPORT tsysASCIILineReader : public tsysMappedFile, public tsysLineStripper {
 public:
     /** Trim Blanks Mode */
     enum BlankTrimMode {
