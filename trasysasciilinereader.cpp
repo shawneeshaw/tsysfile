@@ -41,7 +41,7 @@ tsysASCIILineReader::tsysASCIILineReader(const char *fname, tsys_ui32t mappingLe
     this->initBufferLen = this->checkBufferSize(mlen);
     assert(this->initBufferLen > 0);
 
-	int ret = this->preRead();  //to determine the feature code(newline character) of the file
+    int ret = this->preRead();  //to determine the feature code(newline character) of the file
     assert(ret == 1);
 }
 
@@ -128,7 +128,7 @@ int tsysASCIILineReader::checkNewLineChars(const char *buffer, tsys_ui32t len)
             _shift_construct(this->featureCode,     this->featureCodeLength, this->shift,     256, 0);
             _shift_construct(this->featureCode_rev, this->featureCodeLength, this->shift_rev, 256, 0);
 
-            return 1;			
+            return 1;     
         }
 
         pos++;
