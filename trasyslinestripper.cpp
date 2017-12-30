@@ -71,7 +71,7 @@ tsys_stat tsysLineStripper::backward(tsys_i32t numLine)
     for(tsys_i32t i = 0; i < numLine; i++) {
         this->lineEndPos = this->lineBeginPos;
 
-		tsys_ui32t prevLineBeginpos;
+        tsys_ui32t prevLineBeginpos;
         stat = this->gotoPrevLineBegin(prevLineBeginpos);
         if(stat == TSYSFILE_ERROR) return TSYSFILE_ERROR;
         assert(prevLineBeginpos >= 0 && prevLineBeginpos <= this->bufferLen);
@@ -181,44 +181,44 @@ tsys_stat tsysLineStripper::gotoNextLineBegin(tsys_ui32t &nextLineBegpos)
                                                                this->pBuffer + this->lineBeginPos, remainedBufferLen,
                                                                1, this->shift);
 
-		if(pdest) {
+        if(pdest) {
             nextLineBegpos = pdest - this->pBuffer + this->featureCodeLength;
             assert(nextLineBegpos >= 0);
-
-			return TSYSFILE_NOERROR;
-		}else {
-			if(this->eof(this->fileOffset + this->bufferLen)) {
+    
+            return TSYSFILE_NOERROR;
+        }else {
+            if(this->eof(this->fileOffset + this->bufferLen)) {
                 if(this->eob(this->lineBeginPos)) return TSYSFILE_ERROR;
-
-				nextLineBegpos = this->bufferLen;
-				return TSYSFILE_END;
-			}
-
+    
+                nextLineBegpos = this->bufferLen;
+                return TSYSFILE_END;
+            }
+    
             fpos_64t offExpect = this->fileOffset;
             if(newLen == 0){
                 newLen    = this->lineEndPos - this->lineBeginPos + 1;
                 offExpect = this->fileOffset + this->lineBeginPos;
             }
             fpos_64t offNew = offExpect;
-
+    
             this->nextMappingOffsetandLen(offNew, newLen);
             assert(offExpect >= offNew);
-
+    
             assert(offNew >= this->fileOffset);
             tsys_ui32t posOff = (tsys_ui32t)(offNew - this->fileOffset);
-
+    
             newLen = this->checkBufferSize(newLen);
             if(newLen == TSYSFILE_MAX_VIEW_SIZE && flg == false)
                 flg = true;
             else if(newLen == TSYSFILE_MAX_VIEW_SIZE && flg == true)
                 return TSYSFILE_ERROR;
-
+    
             if(!this->mappingNextBlock(offNew, newLen)) return TSYSFILE_ERROR;
-
+    
             this->lineBeginPos -= posOff;
             this->lineEndPos   -= posOff;
-		}
-    }
+        }
+    }//end of for(;;)
 }
 
 tsys_stat tsysLineStripper::gotoPrevLineBegin(tsys_ui32t &prevLineBegpos)
@@ -250,20 +250,20 @@ tsys_stat tsysLineStripper::gotoPrevLineBegin(tsys_ui32t &prevLineBegpos)
                                                                 this->pBuffer+remainedBufferLen-1, remainedBufferLen,
                                                                 1, this->shift_rev);
 
-		if(pdest) {
+        if(pdest) {
             prevLineBegpos = pdest - this->pBuffer + this->featureCodeLength;
             assert(prevLineBegpos >= 0);
 
             if(notFeatureCodeEnding) return TSYSFILE_NOERROR_2;
 
-			return TSYSFILE_NOERROR;
-		}else {
-			if(this->bof(this->fileOffset)) {
+            return TSYSFILE_NOERROR;
+        }else {
+            if(this->bof(this->fileOffset)) {
                 if(this->bob(this->lineEndPos)) return TSYSFILE_ERROR;
 
-				prevLineBegpos = 0;
-				return TSYSFILE_BEGIN;
-			}
+                prevLineBegpos = 0;
+                return TSYSFILE_BEGIN;
+            }
             
             tsys_ui32t mustKeepLen = lineEndPos + 1;
             tsys_ui32t newLen = mustKeepLen;
@@ -278,6 +278,6 @@ tsys_stat tsysLineStripper::gotoPrevLineBegin(tsys_ui32t &prevLineBegpos)
             if(!this->mappingPrevBlock(offNew, newLen)) return TSYSFILE_ERROR;
 
             this->lineEndPos += (newLen - mustKeepLen);
-		}
-    }
+        }
+    }//end of for(;;)
 }
