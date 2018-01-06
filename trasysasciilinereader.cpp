@@ -39,10 +39,13 @@ tsysASCIILineReader::tsysASCIILineReader(const char *fname, tsys_ui32t mappingLe
     if( mlen == 0 ) mlen = this->fsize;
 
     this->initBufferLen = this->checkBufferSize(mlen);
-    assert(this->initBufferLen > 0);
 
-    int ret = this->preRead();  //to determine the feature code(newline character) of the file
-    assert(ret == 1);
+    if( this->fsize > 0 ) {
+        assert(this->initBufferLen > 0);
+
+        int ret = this->preRead();  //to determine the feature code(newline character) of the file
+        assert(ret == 1);
+    }
 }
 
 tsysASCIILineReader::~tsysASCIILineReader()
