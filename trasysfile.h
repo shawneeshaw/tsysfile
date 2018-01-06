@@ -578,16 +578,16 @@ inline tsys_ui32t tsysMappedFile::checkMappingSize(size_64t len)
 class TSYS_EXPORT tsysLineStripper {
 public:
     /** goto the appointed "line" in the file */
-    tsys_stat at(tsys_i32t lineNo);
+    tsys_stat At(tsys_i32t lineNo);
 
     /** backward one or more "lines" in the file */
-    tsys_stat backward(tsys_i32t numLine = 1);
+    tsys_stat Backward(tsys_i32t numLine = 1);
 
     /** forward one or more "lines" in the file */
-    tsys_stat forward(tsys_i32t numLine = 1);
+    tsys_stat Forward(tsys_i32t numLine = 1);
 
     /** Position the "line" from the location indicated by origin argument */
-    tsys_stat seek(tsys_i32t numLine, tsysFile::Position origin);
+    tsys_stat Jump(tsys_i32t numLine, tsysFile::Position origin);
 
 public:
     /** Get line No. */
