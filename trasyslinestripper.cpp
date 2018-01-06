@@ -41,7 +41,7 @@ void tsysLineStripper::initialization() {
 //////////////////////////////////////////////////////////////////////////
 //                           PUBLIC FUNCTIONS                           //
 //////////////////////////////////////////////////////////////////////////
-tsys_stat tsysLineStripper::at(tsys_i32t lineNo)
+tsys_stat tsysLineStripper::At(tsys_i32t lineNo)
 {
     //@@preconditions
     assert(lineNo > 0);
@@ -51,15 +51,15 @@ tsys_stat tsysLineStripper::at(tsys_i32t lineNo)
 
     tsys_i32t numLine = lineNo - this->curLineNo;
     if(numLine < 0){
-        return (this->backward(-numLine));
+        return (this->Backward(-numLine));
     }else if(numLine > 0){
-        return (this->forward(numLine));
+        return (this->Forward(numLine));
     }
 
     return TSYSFILE_NOERROR;
 }
 
-tsys_stat tsysLineStripper::backward(tsys_i32t numLine)
+tsys_stat tsysLineStripper::Backward(tsys_i32t numLine)
 {
     //@@preconditions
     assert(numLine > 0);
@@ -97,7 +97,7 @@ tsys_stat tsysLineStripper::backward(tsys_i32t numLine)
     return stat;
 }
 
-tsys_stat tsysLineStripper::forward(tsys_i32t numLine)
+tsys_stat tsysLineStripper::Forward(tsys_i32t numLine)
 {
     //@@preconditions
     assert(numLine > 0);
@@ -135,19 +135,19 @@ tsys_stat tsysLineStripper::forward(tsys_i32t numLine)
     return stat;
 }
 
-tsys_stat tsysLineStripper::seek(tsys_i32t numLine, tsysFile::Position origin)
+tsys_stat tsysLineStripper::Jump(tsys_i32t numLine, tsysFile::Position origin)
 {
     //@@preconditions
     assert(numLine > 0);
     //@@end preconditions
 
-    if(numLine == 0) return TSYSFILE_ERROR;
-
     if(origin == tsysFile::positionCurrent) {
+        if(numLine == 0) return TSYSFILE_NOERROR;
+
         if(numLine > 0) {
-            return (this->forward(numLine));
+            return (this->Forward(numLine));
         } else {
-            return (this->backward(-numLine));
+            return (this->Backward(-numLine));
         }
     }else if(origin == tsysFile::positionBegin) {
         if(numLine < 0) return TSYSFILE_ERROR;
@@ -155,11 +155,14 @@ tsys_stat tsysLineStripper::seek(tsys_i32t numLine, tsysFile::Position origin)
         if(this->mappingNextBlock(0, this->initBufferLen)) {
             this->curLineNo = 0;
             this->lineBeginPos = this->lineEndPos = 0;
-            return (this->forward(numLine));
+            return (this->Forward(numLine));
         }
     }else if(origin == tsysFile::positionEnd) {
         if(numLine < 0) return TSYSFILE_ERROR;
-        assert(0);  //FIXME: support it later.
+        
+        while(this->Forward() != TSYSFILE_ERROR);  //goto the ending of file
+        if(numLine == 0) return TSYSFILE_NOERROR;
+        return this->Backward(numLine);
     }
 
     return TSYSFILE_ERROR;
